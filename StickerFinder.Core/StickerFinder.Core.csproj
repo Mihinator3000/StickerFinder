@@ -6,14 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\StickerFinder.Domain\StickerFinder.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+	
+	<ItemGroup>
     <Folder Include="Generators\" />
     <Folder Include="Parsers\" />
   </ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\StickerFinder.Domain\StickerFinder.Domain.csproj" />
+	</ItemGroup>
 
 </Project>
