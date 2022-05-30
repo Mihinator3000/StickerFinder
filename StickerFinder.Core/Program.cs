@@ -16,5 +16,8 @@ Console.WriteLine(requestLink);
 string rawData = await new RawDataProvider{RequestLink = requestLink}.GetRawDataAsync();
 /*Console.WriteLine(dataString);*/
 
-WeaponDto weapon = new RawDataParser(rawData).GetCheapestWeapon();
-Console.WriteLine(weapon);
+/*WeaponDto weapon = new RawDataParser(rawData).GetCheapestWeapon();
+Console.WriteLine(weapon);*/
+
+new RawDataParser(rawData).GetCheapestWeapons(100).ToList().ForEach(u => 
+    Console.WriteLine(u.Name + " " + u.Price));
