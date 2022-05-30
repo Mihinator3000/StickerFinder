@@ -8,7 +8,6 @@ namespace StickerFinder.Core.Parsers;
 public class RawDataParser
 {
     private const int MinWeaponsCount = 1;
-    private const int WeaponsDataCount = 10;
 
     private const decimal MinWeaponPrice = 0;
 
@@ -17,20 +16,16 @@ public class RawDataParser
     public RawDataParser(string rawData)
         => _rawData = rawData;
 
-    public WeaponDto GetCheapestWeapon()
-        => GetWeapons().First();
+    public WeaponDto? GetCheapestWeapon()
+        => GetWeapons().FirstOrDefault();
 
     public IEnumerable<WeaponDto> GetCheapestWeapons(int weaponsCount)
     {
         if (weaponsCount < MinWeaponsCount)
             throw new InvalidRequestException(
                 $"Item count could not be less than {MinWeaponsCount}");
-
-        if (weaponsCount > WeaponsDataCount)
-            throw new InvalidRequestException(
-                $"Item count could not be more than {WeaponsDataCount}");
-
-        return GetWeapons();
+        
+        return GetWeapons().Take(weaponsCount);
     }
 
     private IEnumerable<WeaponDto> GetWeapons()
@@ -49,19 +44,11 @@ public class RawDataParser
                     Link = new Regex("href=\"(.+?)\"").Match(u).Groups[1].Value
                 };
             })
-            .Where(u => u.Price > MinWeaponPrice);
+            .Where(u => u.Price > MinWeaponPrice)
+            .OrderBy(u => u.Price);
 
     private IEnumerable<string> GetRawItems()
-    {
-        var itemDescriptionRegex = new Regex("<a class=\"market_listing_row_link\"(.+?\n)+?</a>");
-        MatchCollection matchCollection = itemDescriptionRegex.Matches(_rawData);
-        
-        Console.WriteLine(matchCollection.Count);
-
-        if (matchCollection.Count != WeaponsDataCount)
-            throw new UnfinishedOperationException("Failed to parse raw data");
-
-        return matchCollection
+        => new Regex("<a class=\"market_listing_row_link\"(.+?\n)+?</a>")
+            .Matches(_rawData)
             .Select(u => u.Groups[0].Value);
-    }
 }
